@@ -4,11 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
     public Text highScore;
+    public Text coinsText;
     public string levelSceneName;
 
     void Start() {
         int score = PlayerPrefs.GetInt("score", 0);
-        highScore.text = score == 0 ? "" : "High score : " + score.ToString();
+        highScore.text = score.ToString();
+        int coins = PlayerPrefs.GetInt("coins", 0);
+        coinsText.text = coins.ToString();
     }
 
     void Update() {
