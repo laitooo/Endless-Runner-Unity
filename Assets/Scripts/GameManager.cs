@@ -14,6 +14,11 @@ public class GameManager : MonoBehaviour {
         isDead = false;
     }
 
+    private void Start() {
+        AudioManager.instance.stop("MainMenu");
+        AudioManager.instance.play("InGame");
+    }
+
     public void loosedGame() {
         GetComponent<GameOver>().toogleGameOver(GetComponent<ScoreCounter>().score);
         isDead = true;

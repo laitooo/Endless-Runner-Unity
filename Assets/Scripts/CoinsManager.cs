@@ -25,5 +25,6 @@ public class CoinsManager : MonoBehaviour {
         coins += 1;
         PlayerPrefs.SetInt("coins", coins);
         coinsText.text = coins.ToString() + " $";
+        AudioManager.instance.play("CollectCoin");
     }
 }

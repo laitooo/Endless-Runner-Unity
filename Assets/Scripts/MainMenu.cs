@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour {
         highScore.text = score.ToString();
         int coins = PlayerPrefs.GetInt("coins", 0);
         coinsText.text = coins.ToString();
+        AudioManager.instance.play("MainMenu");
     }
 
     void Update() {

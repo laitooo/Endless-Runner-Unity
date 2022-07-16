@@ -76,6 +76,7 @@ public class PlayerMovement : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Rock")) {
             animator.SetBool("hasFallen", true);
+            AudioManager.instance.play("Death");
             GameManager.instance.loosedGame();
             return;
         }
@@ -84,6 +85,7 @@ public class PlayerMovement : MonoBehaviour {
             GameManager.instance.isDead = true;
             GameObject gameObject = (GameObject) Instantiate(fireEffect, transform.position, Quaternion.identity);
             animator.SetBool("isBurning", true);
+            AudioManager.instance.play("Burning");
             // TODO: delay this
             GameManager.instance.loosedGame();
             return;
