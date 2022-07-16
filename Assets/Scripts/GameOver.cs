@@ -22,13 +22,17 @@ public class GameOver : MonoBehaviour {
         }
         scoreText.text = ((int) score).ToString();
         panel.SetActive(true);
+        AudioManager.instance.stop("InGame");
+        AudioManager.instance.play("InGameMenu");
     }
 
     public void RestartLevel() {
+        AudioManager.instance.stop("InGameMenu");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);        
     }
 
     public void goToMenu() {
+        AudioManager.instance.stop("InGameMenu");
         SceneManager.LoadScene(menuSceneName);
     }
 }
