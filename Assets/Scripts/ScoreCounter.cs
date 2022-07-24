@@ -32,6 +32,6 @@ public class ScoreCounter : MonoBehaviour {
         }
         scoreToNextLevel += levelUpScrore;
         level++;
-        playerMovement.increaseSpeed((level - 1) * 5);
+        playerMovement.increaseSpeed((level - 1) * 50);
     }
 }

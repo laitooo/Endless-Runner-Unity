@@ -1,23 +1,27 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
     public Animator animator;
     public GameObject fireEffect;
     public float runningSpeed = 20f;
     public float jumpPower = 4f;
+    public float minHorizontalSpeed = 5;
     public float maxHorizontalSpeed = 20f;
     public float horizontalAccelration = 0.5f;
     public float jumpDuration = 0.6f;
     public float distanceToGround = 1f;
 
-    private float horizontalSpeed;
-    private float speed;
+    private Rigidbody rigidbody;
+    public float horizontalSpeed;
+    public float speed;
     private float jumpCounter;
     private float previousHorizontal;
     private bool isJumpIncreasing;
 
     void Start() {
-        horizontalSpeed = 0.0f;
+        rigidbody = GetComponent<Rigidbody>();
+        horizontalSpeed = minHorizontalSpeed;
         previousHorizontal = 0.0f;
         isJumpIncreasing = false;
         speed = runningSpeed;
@@ -26,39 +30,29 @@ public class PlayerMovement : MonoBehaviour {
 
     void Update() {
         if (GameManager.instance.isDead) {
+            rigidbody.velocity = Vector3.zero;
             return;
         }
         
         RaycastHit raycastHit;
-        float jumpMovement = 0f;
         if (Physics.Raycast(transform.position, Vector3.down, out raycastHit, distanceToGround)) {
-            if (jumpCounter <= 0f) {
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    jumpMovement = jumpPower;
-                    isJumpIncreasing = true;
-                    jumpCounter += isJumpIncreasing ? Time.deltaTime : -Time.deltaTime;
-                }
-            }
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                rigidbody.AddForce(Vector3.up * jumpPower);
+                animator.SetBool("isJumping", true);
+            }    
         } else {
-            if (jumpCounter >= jumpDuration) {
-                isJumpIncreasing = false;
-            }            
+            if (animator.GetBool("isJumping")) {
+                animator.SetBool("isJumping", false);
+            }
         }
 
-        if (jumpCounter > 0f) {
-            jumpMovement = jumpPower;
-            jumpCounter += isJumpIncreasing ? Time.deltaTime : -Time.deltaTime;
-        }
-        
-        animator.SetFloat("jump", jumpCounter);
-
-        float horMovement = (Input.GetKey("a") ? -1 : (Input.GetKey("d") ? 1 : 0));
+        float horMovement = ((Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow)) ? -1 : ((Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow)) ? 1 : 0));
         if (horMovement == 0) {
-            horizontalSpeed = 0;
+            horizontalSpeed = minHorizontalSpeed;
         } else {
             if ((horMovement > 0 && previousHorizontal < 0)
              || (horMovement < 0 && previousHorizontal > 0)) {
-                horizontalSpeed = 0;
+                horizontalSpeed = minHorizontalSpeed;
             }
             previousHorizontal = horMovement;
 
@@ -67,10 +61,8 @@ public class PlayerMovement : MonoBehaviour {
             }
         }
 
-        Vector3 direction = (new Vector3(0, 0, 1f) * speed) + 
-            (new Vector3(horMovement, 0, 0) * horizontalSpeed) +
-            new Vector3(0, jumpMovement, 0);
-        transform.Translate(direction * Time.deltaTime, Space.World);
+        Vector3 direction = new Vector3(horMovement * horizontalSpeed * Time.deltaTime, rigidbody.velocity.y, speed * Time.deltaTime);
+        rigidbody.velocity = direction;
     }
 
     void OnCollisionEnter(Collision collision) {
@@ -86,8 +78,7 @@ public class PlayerMovement : MonoBehaviour {
             GameObject gameObject = (GameObject) Instantiate(fireEffect, transform.position, Quaternion.identity);
             animator.SetBool("isBurning", true);
             AudioManager.instance.play("Burning");
-            // TODO: delay this
-            GameManager.instance.loosedGame();
+            StartCoroutine(getBurned());
             return;
         }
     }
@@ -98,6 +89,11 @@ public class PlayerMovement : MonoBehaviour {
             CoinsManager.instance.collectCoin();
             return;
         }
+    }
+
+    IEnumerator getBurned() {
+        yield return new WaitForSeconds(3);
+        GameManager.instance.loosedGame();
     }
 
     public void increaseSpeed(float amount) {

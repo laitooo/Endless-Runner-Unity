@@ -2665,7 +2665,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.23
+  m_Radius: 0.35
   m_Height: 1.7819064
   m_Direction: 1
   m_Center: {x: 0, y: 0.88930297, z: 0}
@@ -2701,10 +2701,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+  fireEffect: {fileID: 0}
   runningSpeed: 20
   jumpPower: 4
   maxHorizontalSpeed: 20
   horizontalAccelration: 0.5
+  jumpDuration: 0.6
   distanceToGround: 1
 --- !u!1 &8101799446464080648
 GameObject:
