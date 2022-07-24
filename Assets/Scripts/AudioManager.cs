@@ -4,6 +4,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour {
     public static AudioManager instance;
     public Sound[] sounds;
+    public bool stopAudio = false;
 
     void Awake() {
         if (instance == null) {
@@ -27,6 +28,10 @@ public class AudioManager : MonoBehaviour {
     }
 
     public void play(string name) {
+        if (stopAudio) {
+            return;
+        }
+
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
             Debug.LogError("Sound " + name + " not found");
@@ -36,6 +41,10 @@ public class AudioManager : MonoBehaviour {
     }
     
     public void stop(string name) {
+        if (stopAudio) {
+            return;
+        }
+        
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
             Debug.LogError("Sound " + name + " not found");
@@ -47,6 +56,10 @@ public class AudioManager : MonoBehaviour {
     }
 
     public void pause(string name) {
+        if (stopAudio) {
+            return;
+        }
+        
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
             Debug.LogError("Sound " + name + " not found");
@@ -58,6 +71,10 @@ public class AudioManager : MonoBehaviour {
     }
 
     public void resume(string name) {
+        if (stopAudio) {
+            return;
+        }
+        
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
             Debug.LogError("Sound " + name + " not found");
@@ -69,6 +86,10 @@ public class AudioManager : MonoBehaviour {
     }
 
     public bool isPlaying(string name) {
+        if (stopAudio) {
+            return false;
+        }
+        
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
             Debug.LogError("Sound " + name + " not found");
